@@ -61,8 +61,8 @@ public class Users {
     private UserStatus status = UserStatus.ACTIVE;
 
 
-    // Relationships - Handle circular references carefully
-    @ManyToMany(fetch = FetchType.LAZY) // Changed to LAZY to avoid circular loading
+    // Relationships - Handle circular references 
+    @ManyToMany(fetch = FetchType.LAZY) 
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
