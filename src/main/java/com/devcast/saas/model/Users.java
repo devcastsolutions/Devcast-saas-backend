@@ -22,48 +22,50 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Users {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long userId;
 
-    @NotBlank(message = "First name is required")
-    @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters")
-    @Pattern(regexp = "^[a-zA-Z\\s'-]+$", message = "First name can only contain letters, spaces, hyphens, and apostrophes")
+    @NotBlank
+    @Size(min = 2, max = 50)
+    @Pattern(regexp = "^[a-zA-Z\\s'-]+$")
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @NotBlank(message = "Last name is required")
-    @Size(min = 2, max = 50, message = "Last name must be between 2 and 50 characters")
-    @Pattern(regexp = "^[a-zA-Z\\s'-]+$", message = "Last name can only contain letters, spaces, hyphens, and apostrophes")
+    @NotBlank
+    @Size(min = 2, max = 50)
+    @Pattern(regexp = "^[a-zA-Z\\s'-]+$")
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Email should be valid", regexp = "^[A-Za-z0-9+_.-]+@(.+)$")
+    @NotBlank
+    @Email
     @Column(unique = true, nullable = false)
     private String email;
 
-    @NotBlank(message = "Username is required")
-    @Size(min = 3, max = 30, message = "Username must be between 3 and 30 characters")
-    @Pattern(regexp = "^[a-zA-Z0-9_.-]+$", message = "Username can only contain alphanumeric characters, underscores, dots, and hyphens")
+    @NotBlank
+    @Size(min = 3, max = 30)
+    @Pattern(regexp = "^[a-zA-Z0-9_.-]+$")
     @Column(unique = true, nullable = false)
     private String username;
 
-    @NotNull(message = "Role is required")
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role = UserRole.USER;
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 8, max = 255, message = "Password must be between 8 and 255 characters")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$", 
-            message = "Password must contain at least one digit, one lowercase letter, one uppercase letter, and one special character")
-    @Column(nullable = false)
+    @NotBlank
+    @Size(min = 8, max = 255)
+    @Pattern(
+        regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$"
+    )
     @JsonIgnore
+    @Column(nullable = false)
     private String password;
 
-    @URL(message = "Profile image URL should be valid")
+    @URL
     @Column(name = "profile_image_url")
     private String profileImageUrl;
 
@@ -71,7 +73,6 @@ public class Users {
     @Column(nullable = false)
     private UserStatus status = UserStatus.ACTIVE;
 
-    @Email(message = "Email verification email should be valid")
     @Column(name = "email_verified")
     private Boolean emailVerified = false;
 
@@ -86,14 +87,17 @@ public class Users {
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
 
+    @Pattern(regexp = "^[+]?[0-9]{10,15}$")
     @Column(name = "phone_number")
-    @Pattern(regexp = "^[+]?[0-9]{10,15}$", message = "Phone number must be between 10 and 15 digits")
     private String phoneNumber;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    // Relationships
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "user_roles",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
     @JsonIgnore
     private Set<Role> roles = new HashSet<>();
 
